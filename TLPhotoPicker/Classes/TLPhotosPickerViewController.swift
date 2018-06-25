@@ -746,8 +746,7 @@ extension TLPhotosPickerViewController: UICollectionViewDelegate,UICollectionVie
         guard var asset = collection.getTLAsset(at: indexPath.row), let phAsset = asset.phAsset else { return }
         cell.popScaleAnim()
         if let index = self.selectedAssets.index(where: { $0.phAsset == asset.phAsset }) {
-        //deselect
-            self.logDelegate?.deselectedPhoto(picker: self, at: indexPath.row)
+        //deselect            
             self.selectedAssets.remove(at: index)
             #if swift(>=4.1)
             self.selectedAssets = self.selectedAssets.enumerated().compactMap({ (offset,asset) -> TLPHAsset? in
@@ -768,9 +767,9 @@ extension TLPhotosPickerViewController: UICollectionViewDelegate,UICollectionVie
             if self.playRequestId?.indexPath == indexPath {
                 stopPlay()
             }
+            self.logDelegate?.deselectedPhoto(picker: self, at: indexPath.row)
         }else {
         //select
-            self.logDelegate?.selectedPhoto(picker: self, at: indexPath.row)
             guard !maxCheck() else { return }
             guard canSelect(phAsset: phAsset) else { return }
             asset.selectedOrder = self.selectedAssets.count + 1
@@ -780,6 +779,7 @@ extension TLPhotosPickerViewController: UICollectionViewDelegate,UICollectionVie
             if asset.type != .photo, self.configure.autoPlay {
                 playVideo(asset: asset, indexPath: indexPath)
             }
+            self.logDelegate?.selectedPhoto(picker: self, at: indexPath.row)
         }
     }
     
